@@ -1,0 +1,31 @@
+{
+  "name": "utah-burn-day",
+  "version": "1.0.0",
+  "description": "An Alexa skill for determining what color of burn day it is from the Utah DEQ web service.",
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint ./ && mocha",
+    "deploy": "dpl"
+  },
+  "keywords": [
+    "burn",
+    "day",
+    "utah",
+    "deq"
+  ],
+  "author": "Scott Davis <sthomasdavis@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "alexa-app": "^4.0.0",
+    "csv-parse": "^1.2.0",
+    "moment": "^2.18.1",
+    "request": "^2.81.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "dpl": "^3.7.1",
+    "eslint": "^3.19.0",
+    "mocha": "^3.2.0"
+  },
+  "files_to_deploy": ["package.json", "burnday.js", "index.js", "parser.js"]
+}
