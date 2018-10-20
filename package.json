@@ -1,31 +1,54 @@
 {
-  "name": "utah-burn-day",
-  "version": "1.0.0",
-  "description": "An Alexa skill for determining what color of burn day it is from the Utah DEQ web service.",
+  "name": "utah-air-quality-alexa-skill",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stdavis/utah-air-quality-alexa-skill.git"
+  },
+  "version": "0.1.0",
+  "description": "An Alexa skill for determining what the air quality it for your county in Utah.",
   "main": "index.js",
   "scripts": {
     "test": "eslint ./ && mocha",
-    "deploy": "dpl"
+    "deploy": "dpl",
+    "local": "lambda-local -l index.js -e test/data/local_lambda_event.js",
+    "watch": "rerun-script"
+  },
+  "watches": {
+    "local": [
+      "*.js"
+    ]
   },
   "keywords": [
     "burn",
     "day",
     "utah",
-    "deq"
+    "deq",
+    "air",
+    "quality"
   ],
   "author": "Scott Davis <sthomasdavis@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "alexa-app": "^4.0.0",
-    "csv-parse": "^1.2.0",
-    "moment": "^2.18.1",
-    "request": "^2.81.0"
+    "ask-sdk": "2.1.0",
+    "csv-parse": "1.2.0",
+    "dotenv": "6.1.0",
+    "lodash.capitalize": "4.2.1",
+    "moment": "2.22.2",
+    "request": "2.88.0",
+    "request-promise": "4.2.2"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "dpl": "^3.7.1",
-    "eslint": "^3.19.0",
-    "mocha": "^3.2.0"
+    "chai": "3.5.0",
+    "dpl": "3.8.0",
+    "eslint": "3.19.0",
+    "mocha": "3.2.0",
+    "rerun-script": "0.6.0"
   },
-  "files_to_deploy": ["package.json", "burnday.js", "index.js", "parser.js"]
+  "files_to_deploy": [
+    "package.json",
+    "airquality.js",
+    "index.js",
+    "parser.js",
+    "getcounty.js"
+  ]
 }
