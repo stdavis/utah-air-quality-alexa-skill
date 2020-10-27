@@ -1,14 +1,15 @@
 var parser = require('./parser');
 const fetch = require('node-fetch');
+const https = require('https');
 
 
 var deqUrl = 'https://air.utah.gov/csvFeed.php?id=forecast';
 
 module.exports = async function (county) {
   try {
-    const response = await fetch(deqUrl, { agent: {
+    const response = await fetch(deqUrl, { agent: https.Agent({
       rejectUnauthorized: false
-    }});
+    })});
     if (!response || response.status !== 200) {
       throw Error(`There is an error with the DEQ website service. Please try again later. ${response}`);
     }
