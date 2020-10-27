@@ -42,6 +42,9 @@ module.exports = async (handlerInput) => {
           predicate: `ZIP5 = '${zipCode}'`,
           apiKey: process.env.MAPSERV_API_KEY
         },
+        headers: {
+          "Referer": "https://utah-air-quality-alexa-skill.com"
+        },
         json: true
       });
     } catch (error) {
@@ -93,6 +96,9 @@ module.exports = async (handlerInput) => {
           geometry: `point:{"x":${centroidX},"y":${centroidY},"spatialReference":{"wkid":26912}}`,
           apiKey: process.env.MAPSERV_API_KEY
         },
+        headers: {
+          "Referer": "https://utah-air-quality-alexa-skill.com"
+        },
         json: true
       });
     } catch (error) {
@@ -113,6 +119,8 @@ module.exports = async (handlerInput) => {
       const response = responseBuilder
         .speak('Uh Oh. Looks like something went wrong.')
         .getResponse();
+
+      console.error(error);
 
       return response;
     }
