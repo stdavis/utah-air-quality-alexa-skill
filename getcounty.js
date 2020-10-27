@@ -1,10 +1,15 @@
-const request = require('request-promise');
+const fetch = require('node-fetch');
 const capitalize = require('lodash.capitalize');
+const queryString = require('query-string');
 
 
-const baseUrl = 'http://api.mapserv.utah.gov/api/v1/search/';
+const baseUrl = 'https://api.mapserv.utah.gov/api/v1/search/';
 const zipUrl = `${baseUrl}SGID10.Boundaries.ZipCodes/ZIP5,shape@envelope`;
 const countyUrl = `${baseUrl}SGID10.Boundaries.Counties/NAME`;
+const headers = {
+  "Referer": "https://utah-air-quality-alexa-skill.com"
+};
+
 module.exports = async (handlerInput) => {
   console.log('getcounty');
 
@@ -36,17 +41,12 @@ module.exports = async (handlerInput) => {
 
     let zipResponse;
     try {
-      zipResponse = await request({
-        uri: zipUrl,
-        qs: {
-          predicate: `ZIP5 = '${zipCode}'`,
-          apiKey: process.env.MAPSERV_API_KEY
-        },
-        headers: {
-          "Referer": "https://utah-air-quality-alexa-skill.com"
-        },
-        json: true
-      });
+      const qs = {
+        predicate: `ZIP5 = '${zipCode}'`,
+        apiKey: process.env.MAPSERV_API_KEY
+      };
+      let response = await fetch(`${zipUrl}?${queryString.stringify(qs)}`, { headers });
+      zipResponse = await response.json();
     } catch (error) {
       console.error(`error with zip search: ${error}`);
     }
@@ -90,17 +90,12 @@ module.exports = async (handlerInput) => {
 
     let countyResponse;
     try {
-      countyResponse = await request({
-        url: countyUrl,
-        qs: {
-          geometry: `point:{"x":${centroidX},"y":${centroidY},"spatialReference":{"wkid":26912}}`,
-          apiKey: process.env.MAPSERV_API_KEY
-        },
-        headers: {
-          "Referer": "https://utah-air-quality-alexa-skill.com"
-        },
-        json: true
-      });
+      const qs = {
+        geometry: `point:{"x":${centroidX},"y":${centroidY},"spatialReference":{"wkid":26912}}`,
+        apiKey: process.env.MAPSERV_API_KEY
+      };
+      let response = await fetch(`${countyUrl}?${queryString.stringify(qs)}`, { headers });
+      countyResponse = await response.json();
     } catch (error) {
       console.error(`error with county request: ${error}`);
     }

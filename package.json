@@ -29,11 +29,13 @@
   "author": "Scott Davis <sthomasdavis@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "ask-sdk": "2.1.0",
+    "ask-sdk": "^2.10.0",
     "csv-parse": "1.2.0",
     "dotenv": "6.1.0",
     "lodash.capitalize": "4.2.1",
     "moment": "2.22.2",
+    "node-fetch": "^2.6.1",
+    "query-string": "^6.13.6",
     "request": "2.88.0",
     "request-promise": "4.2.2"
   },
