@@ -2,7 +2,7 @@ var request = require('request-promise');
 var parser = require('./parser');
 
 
-var deqUrl = 'http://air.utah.gov/csvFeed.php?id=forecast';
+var deqUrl = 'https://air.utah.gov/csvFeed.php?id=forecast';
 
 module.exports = function (county) {
   return new Promise((resolve, reject) => {
