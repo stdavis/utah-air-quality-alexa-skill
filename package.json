@@ -42,7 +42,7 @@
   "devDependencies": {
     "chai": "3.5.0",
     "dpl": "3.8.0",
-    "eslint": "3.19.0",
+    "eslint": "4.18.2",
     "mocha": "3.2.0",
     "rerun-script": "0.6.0"
   },
