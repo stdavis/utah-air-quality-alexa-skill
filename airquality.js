@@ -1,28 +1,28 @@
-var request = require('request-promise');
 var parser = require('./parser');
+const fetch = require('node-fetch');
 
 
 var deqUrl = 'https://air.utah.gov/csvFeed.php?id=forecast';
 
-module.exports = function (county) {
-  return new Promise((resolve, reject) => {
-    request(deqUrl, (error, response, body) => {
-      if (error || !response || response.statusCode !== 200) {
-          reject(Error('There is an error with the DEQ website service. Please try again later'));
-      } else {
+module.exports = async function (county) {
+  try {
+    const response = await fetch(deqUrl, { agent: {
+      rejectUnauthorized: false
+    }});
+    if (!response || response.status !== 200) {
+      throw Error(`There is an error with the DEQ website service. Please try again later. ${response}`);
+    }
+    const text = await response.text();
+    var data = parser(text, new Date(), county);
 
-        try {
-          var data = parser(body, new Date(), county);
+    return {
+      color: data.color,
+      county
+    };
 
-          resolve({
-            color: data.color,
-            county
-          });
-        } catch (error) {
-          console.log(error.message);
-          reject({ error });
-        }
-      }
-    });
-  });
+  } catch (error) {
+    console.log(error.message);
+
+    throw error;
+  }
 };
