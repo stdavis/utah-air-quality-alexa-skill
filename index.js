@@ -1,8 +1,7 @@
-require('dotenv').config();
-const Alexa = require('ask-sdk-core');
-const airquality = require('./airquality');
-const getcounty = require('./getcounty');
-
+import Alexa from 'ask-sdk-core';
+import 'dotenv/config';
+import airquality from './airquality.js';
+import getcounty from './getcounty.js';
 
 const LaunchRequestHandler = {
   canHandle(handlerInput) {
@@ -19,15 +18,14 @@ const LaunchRequestHandler = {
 
     try {
       const response = await airquality(county);
+
       return handlerInput.responseBuilder
         .speak(`Today is a ${response.color} day in ${response.county} county`)
         .getResponse();
     } catch (error) {
-      return handlerInput.responseBuilder
-        .speak(error.error.message)
-        .getResponse();
+      return handlerInput.responseBuilder.speak(error.error.message).getResponse();
     }
-  }
+  },
 };
 
 const ErrorHandler = {
@@ -38,13 +36,13 @@ const ErrorHandler = {
     console.log(`Error handled: ${error.message}`);
 
     return handlerInput.responseBuilder
-      .speak('Sorry, I can\'t understand the command. Please say again.')
-      .reprompt('Sorry, I can\'t understand the command. Please say again.')
+      .speak("Sorry, I can't understand the command. Please say again.")
+      .reprompt("Sorry, I can't understand the command. Please say again.")
       .getResponse();
   },
 };
 
-exports.handler = Alexa.SkillBuilders.custom()
+export const handler = Alexa.SkillBuilders.custom()
   .addRequestHandlers(LaunchRequestHandler)
   .addErrorHandlers(ErrorHandler)
   .withApiClient(new Alexa.DefaultApiClient())

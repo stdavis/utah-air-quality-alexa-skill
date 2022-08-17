@@ -1,45 +1,45 @@
-var csvParse = require('csv-parse/lib/sync');
-var moment = require('moment');
+import { parse } from 'csv-parse/sync';
+import moment from 'moment';
 
-
-var COUNTIES = {
-  'slc': 'Salt Lake',
-  'bv': 'Davis',
-  'utah': 'Utah',
-  'weber': 'Weber',
-  'boxelder': 'Box Elder',
-  'cache': 'Cache',
-  'tooele': 'Tooele',
-  'washington': 'Washington',
-  'p2': 'Carbon',
-  'rs': 'Duchesne',
-  'v4': 'Uintah'
+const COUNTIES = {
+  slc: 'Salt Lake',
+  bv: 'Davis',
+  utah: 'Utah',
+  weber: 'Weber',
+  boxelder: 'Box Elder',
+  cache: 'Cache',
+  tooele: 'Tooele',
+  washington: 'Washington',
+  p2: 'Carbon',
+  rs: 'Duchesne',
+  v4: 'Uintah',
 };
-var FIELDS = {
+const FIELDS = {
   Day: 'Day', // e.g. 2017-04-03
   County: 'County', // e.g. slc
   Severity: 'Severity', // possible values: good, ??
   Action: 'Action', // possible values: unrestricted, ??
-  Message: 'Message' // ??
+  Message: 'Message', // ??
 };
-var COLORS = {
+const COLORS = {
   good: 'green',
   moderate: 'yellow',
   unhealthyforsensitivegroups: 'orange',
   unhealthy: 'red',
   veryunhealthy: 'purple',
-  hazardous: 'brown'
+  hazardous: 'brown',
 };
 
-module.exports = (csvText, date, county) => {
-  var records = csvParse(csvText, {
-    columns: true
+export default function (csvText, date, county) {
+  const records = parse(csvText, {
+    columns: true,
   });
 
-  var data;
-  var found = records.some((record) => {
+  let data;
+  const found = records.some((record) => {
     if (record[FIELDS.Day] === moment(date).format('YYYY-MM-DD') && COUNTIES[record[FIELDS.County]] === county) {
       data = record;
+
       return true;
     }
   });
@@ -49,6 +49,6 @@ module.exports = (csvText, date, county) => {
   }
 
   return {
-    color: COLORS[data[FIELDS.Severity]]
+    color: COLORS[data[FIELDS.Severity]],
   };
-};
+}

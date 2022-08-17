@@ -5,9 +5,11 @@
     "boxelder",
     "Duchesne",
     "getcounty",
+    "packagejson",
     "reprompt",
     "tooele",
     "unhealthyforsensitivegroups",
     "veryunhealthy"
-  ]
+  ],
+  "editor.formatOnSave": true
 }

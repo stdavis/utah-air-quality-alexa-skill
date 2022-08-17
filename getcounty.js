@@ -1,21 +1,19 @@
-const fetch = require('node-fetch');
-const capitalize = require('lodash.capitalize');
-const queryString = require('query-string');
-
+import got from 'got';
+import capitalize from 'lodash.capitalize';
 
 const baseUrl = 'https://api.mapserv.utah.gov/api/v1/search/';
-const zipUrl = `${baseUrl}SGID10.Boundaries.ZipCodes/ZIP5,shape@envelope`;
-const countyUrl = `${baseUrl}SGID10.Boundaries.Counties/NAME`;
+const zipUrl = `${baseUrl}boundaries.zip_code_areas/zip5,shape@envelope`;
+const countyUrl = `${baseUrl}boundaries.county_boundaries/name`;
 const headers = {
-  "Referer": "https://utah-air-quality-alexa-skill.com"
+  Referer: 'https://utah-air-quality-alexa-skill.com',
 };
 
-module.exports = async (handlerInput) => {
+export default async function (handlerInput) {
   console.log('getcounty');
 
   const { requestEnvelope, serviceClientFactory, responseBuilder } = handlerInput;
-  const consentToken = requestEnvelope.context.System.user.permissions
-      && requestEnvelope.context.System.user.permissions.consentToken;
+  const consentToken =
+    requestEnvelope.context.System.user.permissions && requestEnvelope.context.System.user.permissions.consentToken;
   if (!consentToken) {
     return responseBuilder
       .speak('Please enable Location permissions in the Amazon Alexa app.')
@@ -31,7 +29,7 @@ module.exports = async (handlerInput) => {
     console.log('Address successfully retrieved, now responding to user.');
 
     if (address.postalCode === null) {
-       return responseBuilder
+      return responseBuilder
         .speak(`It looks like you don't have zip code set. You can set your zip code from the companion Alexa app.`)
         .getResponse();
     }
@@ -39,29 +37,21 @@ module.exports = async (handlerInput) => {
     const zipCode = address.postalCode.slice(0, 5);
     console.log(`zipCode: ${zipCode}`);
 
-    let zipResponse;
-    try {
-      const qs = {
-        predicate: `ZIP5 = '${zipCode}'`,
-        apiKey: process.env.MAPSERV_API_KEY
-      };
-      let response = await fetch(`${zipUrl}?${queryString.stringify(qs)}`, { headers });
-      zipResponse = await response.json();
-    } catch (error) {
-      console.error(`error with zip search: ${error}`);
-    }
+    const queryString = {
+      predicate: `zip5 = '${zipCode}'`,
+      apiKey: process.env.MAPSERV_API_KEY,
+    };
+    const zipResponse = await got(`${zipUrl}?${new URLSearchParams(queryString)}`, { headers }).json();
 
     console.log(`zip search response: ${JSON.stringify(zipResponse)}`);
     if (zipResponse.result.length === 0) {
-      return responseBuilder
-        .speak(`Zip code, ${zipCode} was not found in Utah!`)
-        .getResponse();
+      return responseBuilder.speak(`Zip code, ${zipCode} was not found in Utah!`).getResponse();
     }
 
     // get centroid
     const geometry = zipResponse.result[0].geometry;
     let maxX, maxY, minX, minY;
-    geometry.rings[0].forEach(coords => {
+    geometry.rings[0].forEach((coords) => {
       const [x, y] = coords;
       if (!maxX) {
         maxX = x;
@@ -83,37 +73,28 @@ module.exports = async (handlerInput) => {
       }
     });
 
-    const centroidX = Math.round((maxX - minX)/2 + minX);
-    const centroidY = Math.round((maxY - minY)/2 + minY);
+    const centroidX = Math.round((maxX - minX) / 2 + minX);
+    const centroidY = Math.round((maxY - minY) / 2 + minY);
 
     console.log(`centroid x,y: ${centroidX}, ${centroidY}`);
 
-    let countyResponse;
-    try {
-      const qs = {
-        geometry: `point:{"x":${centroidX},"y":${centroidY},"spatialReference":{"wkid":26912}}`,
-        apiKey: process.env.MAPSERV_API_KEY
-      };
-      let response = await fetch(`${countyUrl}?${queryString.stringify(qs)}`, { headers });
-      countyResponse = await response.json();
-    } catch (error) {
-      console.error(`error with county request: ${error}`);
-    }
+    const countyQueryString = {
+      geometry: `point:{"x":${centroidX},"y":${centroidY},"spatialReference":{"wkid":26912}}`,
+      apiKey: process.env.MAPSERV_API_KEY,
+    };
+    const countyResponse = await got(`${countyUrl}?${new URLSearchParams(countyQueryString)}`, { headers }).json();
 
     console.log(`county search response: ${JSON.stringify(countyResponse)}`);
     if (countyResponse.result.length === 0) {
-      return responseBuilder
-        .speak(`A county was not found for zip code, ${zipCode}`)
-        .getResponse();
+      return responseBuilder.speak(`A county was not found for zip code, ${zipCode}`).getResponse();
     }
 
     const countyName = countyResponse.result[0].attributes.name;
+
     return countyName.split(' ').map(capitalize).join(' ');
   } catch (error) {
     if (error.name !== 'ServiceError') {
-      const response = responseBuilder
-        .speak('Uh Oh. Looks like something went wrong.')
-        .getResponse();
+      const response = responseBuilder.speak('Uh Oh. Looks like something went wrong.').getResponse();
 
       console.error(error);
 
@@ -121,4 +102,4 @@ module.exports = async (handlerInput) => {
     }
     throw error;
   }
-};
+}

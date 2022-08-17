@@ -1,23 +1,7 @@
 {
   "name": "utah-air-quality-alexa-skill",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/stdavis/utah-air-quality-alexa-skill.git"
-  },
   "version": "0.1.0",
   "description": "An Alexa skill for determining what the air quality it for your county in Utah.",
-  "main": "index.js",
-  "scripts": {
-    "test": "eslint ./ && mocha",
-    "deploy": "dpl",
-    "local": "lambda-local -l index.js -e test/data/local_lambda_event.js",
-    "watch": "rerun-script"
-  },
-  "watches": {
-    "local": [
-      "*.js"
-    ]
-  },
   "keywords": [
     "burn",
     "day",
@@ -26,25 +10,55 @@
     "air",
     "quality"
   ],
-  "author": "Scott Davis <sthomasdavis@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stdavis/utah-air-quality-alexa-skill.git"
+  },
   "license": "MIT",
+  "author": "Scott Davis <sthomasdavis@gmail.com>",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "dpl",
+    "format": "prettier . --write",
+    "lint": "eslint .",
+    "test": "npm run lint && mocha"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": true
+  },
+  "eslintConfig": {
+    "env": {
+      "mocha": true,
+      "node": true
+    },
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "extends": [
+      "eslint:recommended",
+      "prettier"
+    ]
+  },
   "dependencies": {
-    "ask-sdk": "^2.10.0",
-    "csv-parse": "1.2.0",
-    "dotenv": "6.1.0",
+    "ask-sdk": "^2.12.1",
+    "csv-parse": "^5.3.0",
+    "dotenv": "^16.0.1",
+    "got": "^12.3.1",
     "lodash.capitalize": "4.2.1",
-    "moment": "2.29.2",
-    "node-fetch": "^2.6.1",
-    "query-string": "^6.13.6",
-    "request": "2.88.0",
-    "request-promise": "4.2.2"
+    "moment": "^2.29.4"
   },
   "devDependencies": {
-    "chai": "3.5.0",
-    "dpl": "3.8.0",
-    "eslint": "3.19.0",
-    "mocha": "3.2.0",
-    "rerun-script": "0.6.0"
+    "chai": "^4.3.6",
+    "dpl": "^4.0.1",
+    "eslint": "^8.22.0",
+    "eslint-config-prettier": "^8.5.0",
+    "mocha": "^10.0.0",
+    "prettier": "^2.7.1",
+    "prettier-plugin-organize-imports": "^3.1.0",
+    "prettier-plugin-packagejson": "^2.2.18"
   },
   "files_to_deploy": [
     "package.json",
