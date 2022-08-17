@@ -6,7 +6,7 @@ var moment = require('moment');
 
 describe('parser', function () {
   it('should return matching data from the CSV', function () {
-    var csv = fs.readFileSync('test/data/forcast.csv', 'utf8');
+    var csv = fs.readFileSync('test/data/forecast.csv', 'utf8');
     expect(parser(csv, moment('2017-04-05').toDate(), 'Salt Lake')).to.deep.equal({
       color: 'orange'
     });
