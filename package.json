@@ -1,6 +1,6 @@
 {
   "name": "utah-air-quality-alexa-skill",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "An Alexa skill for determining what the air quality it for your county in Utah.",
   "keywords": [
     "burn",
@@ -22,6 +22,7 @@
     "deploy": "dpl",
     "format": "prettier . --write",
     "lint": "eslint .",
+    "release": "standard-version",
     "test": "npm run lint && mocha"
   },
   "prettier": {
@@ -58,7 +59,8 @@
     "mocha": "^10.0.0",
     "prettier": "^2.7.1",
     "prettier-plugin-organize-imports": "^3.1.0",
-    "prettier-plugin-packagejson": "^2.2.18"
+    "prettier-plugin-packagejson": "^2.2.18",
+    "standard-version": "^9.5.0"
   },
   "files_to_deploy": [
     "package.json",
